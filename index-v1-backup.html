@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>控制棒驱动机构电源（机组式）工作原理</title>
+<style>
+:root{
+  --bg:#0b1220; --panel:#111b2e; --line:#1e2c45; --txt:#dce6f5; --dim:#8ba0bd;
+  --accent:#4da3ff; --ok:#37d67a; --warn:#ffb020; --bad:#ff5c5c; --hot:#ff8a3d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 700px at 50% -10%,#16233c,#0b1220 70%);
+  color:var(--txt);font-family:"Noto Sans CJK SC","Noto Sans SC",system-ui,sans-serif;overflow-x:hidden}
+header{padding:18px 24px 6px;text-align:center}
+h1{font-size:22px;margin:0 0 6px;font-weight:600;letter-spacing:.5px}
+.sub{color:var(--dim);font-size:13px}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;padding:10px 18px 90px;max-width:1500px;margin:0 auto}
+@media(max-width:1050px){.wrap{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,rgba(23,35,56,.92),rgba(15,24,40,.92));
+  border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#stage{padding:8px}
+svg{display:block;width:100%;height:auto}
+.panel{padding:14px 16px}
+.panel h3{margin:0 0 10px;font-size:14px;color:var(--accent);letter-spacing:.5px}
+.gauge{margin-bottom:12px}
+.gauge .label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:4px}
+.gauge .barwrap{height:8px;background:#1a2740;border-radius:5px;overflow:hidden}
+.gauge .bar{height:100%;width:0%;border-radius:5px;transition:width .18s linear}
+#caption{position:fixed;left:0;right:0;bottom:0;padding:14px 22px 16px;background:linear-gradient(0deg,rgba(6,10,18,.97),rgba(6,10,18,.75) 70%,transparent);}
+#caption .idx{font-size:12px;color:var(--accent);letter-spacing:1px;margin-bottom:4px}
+#caption .txt{font-size:15px;line-height:1.5}
+#caption .txt b{color:#fff}
+.controls{display:flex;align-items:center;gap:10px;margin-top:10px}
+button{background:#1c2a44;color:var(--txt);border:1px solid #2b3d5e;border-radius:9px;
+  padding:7px 14px;font-size:13px;cursor:pointer;transition:.15s}
+button:hover{background:#24344f;border-color:#3a5480}
+button.primary{background:#1b4a86;border-color:#2f6fbf}
+input[type=range]{flex:1;accent-color:var(--accent)}
+.timeline{display:flex;gap:4px;margin-top:10px}
+.timeline div{flex:1;height:4px;border-radius:3px;background:#1e2c45;cursor:pointer;transition:.2s}
+.timeline div.on{background:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--dim);margin-top:12px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.tag{font-size:11px;padding:1px 7px;border-radius:20px;border:1px solid #2b3d5e;color:var(--dim)}
+.state-row{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-bottom:1px dashed #1d2a41}
+.state-row span:last-child{font-variant-numeric:tabular-nums;color:#fff}
+</style>
+</head>
+<body>
+<header>
+  <h1>控制棒驱动机构电源 · 机组式工作原理</h1>
+  <div class="sub">电动机—飞轮—发电机组供电｜三组线圈步进提棒｜失电时飞轮维持 · 棒重力落下</div>
+</header>
+
+<div class="wrap">
+  <div class="card" id="stage">
+    <svg viewBox="0 0 1000 560" id="svg">
+      <defs>
+        <linearGradient id="gMetal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2b3f61"/><stop offset="1" stop-color="#16233a"/>
+        </linearGradient>
+        <linearGradient id="gRod" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#9fb4d1"/><stop offset="1" stop-color="#5c7296"/>
+        </linearGradient>
+        <linearGradient id="gFlow" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#4da3ff" stop-opacity="0"/><stop offset=".5" stop-color="#4da3ff"/><stop offset="1" stop-color="#4da3ff" stop-opacity="0"/>
+        </linearGradient>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#4da3ff"/>
+        </marker>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+
+      <!-- 电网 / 厂用电 -->
+      <g id="grid">
+        <rect x="30" y="40" width="120" height="58" rx="9" fill="url(#gMetal)" stroke="#33507c"/>
+        <text x="90" y="64" text-anchor="middle" font-size="13" fill="#cfe0f5">6kV 厂用电</text>
+        <text x="90" y="83" text-anchor="middle" font-size="11" fill="#7f96b8">Grid / Aux Power</text>
+        <text x="90" y="120" text-anchor="middle" font-size="11" fill="#8ba0bd" id="gridState">带电</text>
+      </g>
+
+      <!-- 电动机 -->
+      <g id="motorG">
+        <circle cx="255" cy="70" r="38" fill="url(#gMetal)" stroke="#33507c"/>
+        <circle cx="255" cy="70" r="24" fill="none" stroke="#4da3ff" stroke-width="2" id="motorRotor"/>
+        <text x="255" y="75" text-anchor="middle" font-size="15" fill="#dce6f5">M</text>
+        <text x="255" y="128" text-anchor="middle" font-size="11" fill="#8ba0bd">驱动电动机</text>
+        <text x="255" y="146" text-anchor="middle" font-size="10.5" fill="#6d82a3" id="rpmTxt">1500 rpm</text>
+      </g>
+
+      <!-- 飞轮 -->
+      <g id="flyG">
+        <circle cx="380" cy="70" r="40" fill="none" stroke="#33507c" stroke-width="10"/>
+        <circle cx="380" cy="70" r="40" fill="none" stroke="#ffb020" stroke-width="4" stroke-dasharray="6 10" id="flyMark"/>
+        <text x="380" y="75" text-anchor="middle" font-size="12" fill="#dce6f5">飞轮</text>
+        <text x="380" y="128" text-anchor="middle" font-size="11" fill="#8ba0bd">惯性储能</text>
+        <text x="380" y="146" text-anchor="middle" font-size="10.5" fill="#6d82a3" id="flyTxt">E 100%</text>
+      </g>
+
+      <!-- 发电机 -->
+      <g id="genG">
+        <circle cx="505" cy="70" r="38" fill="url(#gMetal)" stroke="#33507c"/>
+        <path d="M487 70 L505 52 L523 70 L505 88 Z" fill="none" stroke="#37d67a" stroke-width="2"/>
+        <text x="505" y="128" text-anchor="middle" font-size="11" fill="#8ba0bd">交流发电机</text>
+        <text x="505" y="146" text-anchor="middle" font-size="10.5" fill="#6d82a3" id="voltTxt">380V 50Hz</text>
+      </g>
+
+      <!-- 母线 -->
+      <line x1="543" y1="70" x2="640" y2="70" stroke="#33507c" stroke-width="4"/>
+      <line x1="600" y1="70" x2="600" y2="190" stroke="#33507c" stroke-width="4"/>
+      <text x="660" y="64" font-size="11" fill="#8ba0bd">三相交流母线</text>
+      <path d="M560 70 L640 70" stroke="url(#gFlow)" stroke-width="5" id="flowToBus" opacity="0"/>
+
+      <!-- 逻辑柜 -->
+      <g id="logicG">
+        <rect x="545" y="150" width="110" height="80" rx="9" fill="url(#gMetal)" stroke="#33507c"/>
+        <text x="600" y="180" text-anchor="middle" font-size="12" fill="#cfe0f5">逻辑柜</text>
+        <text x="600" y="197" text-anchor="middle" font-size="10" fill="#7f96b8">整流 · 开关</text>
+        <text x="600" y="213" text-anchor="middle" font-size="10" fill="#7f96b8">RPS / 程序柜</text>
+      </g>
+
+      <!-- 三组线圈 -->
+      <g id="coilsG" transform="translate(700,0)">
+        <text x="0" y="40" font-size="12" fill="#8ba0bd">CRDM 三组线圈（直流）</text>
+        <g id="coilL">
+          <rect x="0" y="52" width="52" height="30" rx="6" fill="#16233a" stroke="#3a5480"/>
+          <text x="26" y="72" text-anchor="middle" font-size="11.5" fill="#dce6f5">提升 L</text>
+          <rect x="0" y="52" width="52" height="30" rx="6" fill="#4da3ff" opacity="0" id="coilLglow" filter="url(#glow)"/>
+        </g>
+        <g id="coilM" transform="translate(0,44)">
+          <rect x="0" y="52" width="52" height="30" rx="6" fill="#16233a" stroke="#3a5480"/>
+          <text x="26" y="72" text-anchor="middle" font-size="11.5" fill="#dce6f5">移动 M</text>
+          <rect x="0" y="52" width="52" height="30" rx="6" fill="#4da3ff" opacity="0" id="coilMglow" filter="url(#glow)"/>
+        </g>
+        <g id="coilS" transform="translate(0,88)">
+          <rect x="0" y="52" width="52" height="30" rx="6" fill="#16233a" stroke="#3a5480"/>
+          <text x="26" y="72" text-anchor="middle" font-size="11.5" fill="#dce6f5">保持 S</text>
+          <rect x="0" y="52" width="52" height="30" rx="6" fill="#4da3ff" opacity="0" id="coilSglow" filter="url(#glow)"/>
+        </g>
+      </g>
+
+      <!-- 驱动杆 / 控制棒 -->
+      <g id="rodG" transform="translate(840,0)">
+        <line x1="26" y1="196" x2="26" y2="330" stroke="url(#gRod)" stroke-width="9" id="driveRod"/>
+        <g id="claws">
+          <path d="M10 200 L26 210 L42 200" stroke="#7f96b8" stroke-width="2" fill="none"/>
+          <path d="M10 236 L26 246 L42 236" stroke="#7f96b8" stroke-width="2" fill="none"/>
+        </g>
+        <rect x="8" y="330" width="36" height="120" rx="6" fill="#20304a" stroke="#3a5480" id="rodBody"/>
+        <!-- 堆芯 -->
+        <rect x="-30" y="380" width="112" height="120" rx="8" fill="#131f33" stroke="#2b3d5e"/>
+        <text x="26" y="502" text-anchor="middle" font-size="10.5" fill="#6d82a3">堆芯</text>
+        <g id="fluxG" opacity="0.25">
+          <circle cx="26" cy="440" r="52" fill="#ff8a3d" opacity="0.12"/>
+        </g>
+        <!-- 缓冲器 -->
+        <rect x="-6" y="455" width="64" height="18" rx="5" fill="#2a2233" stroke="#5b3f6b"/>
+        <text x="26" y="488" text-anchor="middle" font-size="10" fill="#8b6f9b">缓冲器</text>
+      </g>
+
+      <!-- 棒位刻度 -->
+      <g id="scaleG" transform="translate(790,0)" font-size="10" fill="#5e7characters">
+      </g>
+      <g transform="translate(790,190)" font-size="10" fill="#5e7391">
+        <line x1="0" y1="0" x2="0" y2="260" stroke="#24344f"/>
+        <text x="-6" y="4" text-anchor="end">顶</text>
+        <text x="-6" y="264" text-anchor="end">底</text>
+      </g>
+
+      <!-- 状态标签 -->
+      <g id="badgesG" transform="translate(30,470)" font-size="11.5">
+        <text x="0" y="0" fill="#8ba0bd" id="badgeStage">阶段：待机</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card panel">
+    <h3>实时状态</h3>
+    <div class="gauge">
+      <div class="label"><span>飞轮转速</span><span id="vRpm">1500</span></div>
+      <div class="barwrap"><div class="bar" id="bRpm" style="background:linear-gradient(90deg,#4da3ff,#7cc4ff)"></div></div>
+    </div>
+    <div class="gauge">
+      <div class="label"><span>母线电压</span><span id="vVolt">380 V</span></div>
+      <div class="barwrap"><div class="bar" id="bVolt" style="background:linear-gradient(90deg,#37d67a,#7ff0ad)"></div></div>
+    </div>
+    <div class="gauge">
+      <div class="label"><span>飞轮储能</span><span id="vE">100%</span></div>
+      <div class="barwrap"><div class="bar" id="bE" style="background:linear-gradient(90deg,#ffb020,#ffd479)"></div></div>
+    </div>
+    <div class="gauge">
+      <div class="label"><span>棒位（堆芯内）</span><span id="vRod">100%</span></div>
+      <div class="barwrap"><div class="bar" id="bRod" style="background:linear-gradient(90deg,#ff5c5c,#ff9b9b)"></div></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="state-row"><span>提升线圈 L</span><span id="sL">断电</span></div>
+      <div class="state-row"><span>移动线圈 M</span><span id="sM">断电</span></div>
+      <div class="state-row"><span>保持线圈 S</span><span id="sS">断电</span></div>
+      <div class="state-row"><span>堆芯中子注量</span><span id="sFlux">100%</span></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#4da3ff"></i>电流 / 通电</span>
+      <span><i style="background:#ffb020"></i>飞轮惯性</span>
+      <span><i style="background:#ff5c5c"></i>落棒 / 停堆</span>
+    </div>
+  </div>
+</div>
+
+<div id="caption">
+  <div class="idx" id="capIdx">第 1 章 / 7</div>
+  <div class="txt" id="capTxt">准备中…</div>
+  <div class="controls">
+    <button id="btnPlay" class="primary">暂停</button>
+    <button id="btnPrev">上一章</button>
+    <button id="btnNext">下一章</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0">
+    <span id="clock" style="font-variant-numeric:tabular-nums;color:#8ba0bd;font-size:12px">0.0s</span>
+  </div>
+  <div class="timeline" id="tl"></div>
+</div>
+
+<script>
+// ---------- 时间轴脚本 ----------
+const SCRIPT = [
+  { t:[0,7],    title:"系统组成",
+    text:"机组式棒电源由<b>驱动电动机</b>、<b>飞轮</b>、<b>交流发电机</b>同轴连接组成，输出三相交流经母线送到<b>逻辑柜</b>，再整流为直流供给 CRDM 的三组线圈。" },
+  { t:[7,15],   title:"机组启动",
+    text:"厂用电投入，电动机拖动同轴机组升速至额定转速，飞轮随轴<b>储存动能</b>；发电机建压，母线电压达到额定值，逻辑柜准备就绪。" },
+  { t:[15,24],  title:"线圈得电 · 保持",
+    text:"逻辑柜先给<b>保持线圈 S</b> 通电，保持爪吸合抓住驱动杆——此时控制棒被“提住”，不会下滑。" },
+  { t:[24,34],  title:"移动爪就位",
+    text:"<b>移动线圈 M</b> 通电，移动爪上移并挂入下一齿槽；两组爪一上一下，形成“倒手”的接力结构。" },
+  { t:[34,44],  title:"提升一步",
+    text:"<b>提升线圈 L</b> 通电产生提升力，驱动杆连同控制棒上提一个齿距（约 10 mm）。" },
+  { t:[44,54],  title:"倒手 · 完成一步",
+    text:"保持爪接住新齿位后，M 与 L 依次失电，移动爪回落复位。<b>一次“提—挂—松”循环，棒上升一步</b>，如此往复逐齿提升。" },
+  { t:[54,66],  title:"失电 · 飞轮维持",
+    text:"厂用电突然失去，电动机失去动力，但<b>飞轮惯性</b>继续拖动发电机，母线电压与线圈电流短时间内不中断——控制棒<b>保持原位不误落</b>，为停堆操作争取时间。" },
+  { t:[66,80],  title:"落棒停堆",
+    text:"若失电持续或收到停堆信号，逻辑柜<b>切断三组线圈电流</b>，爪失磁释放，控制棒在重力下快速落入堆芯，由缓冲器吸收冲击能量——<b>反应堆紧急停堆</b>。" },
+  { t:[80,90],  title:"小结",
+    text:"机组式棒电源靠<b>旋转惯量</b>抵御短时失电，靠<b>失磁落棒</b>保证停堆安全：既是“稳住棒”的电源，也是“放开棒”的开关。" }
+];
+const TOTAL = SCRIPT[SCRIPT.length-1].t[1];
+let t = 0, playing = true, last = performance.now();
+
+const $ = id => document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const seg=t=>SCRIPT.findIndex(s=>t>=s.t[0]&&t<s.t[1]);
+
+// 时间线小方块
+const tl = $('tl');
+SCRIPT.forEach((s,i)=>{ const d=document.createElement('div'); d.title=s.title;
+  d.onclick=()=>{ t=s.t[0]+0.01; playing=true; $('btnPlay').textContent='暂停'; };
+  tl.appendChild(d); });
+const tld = [...tl.children];
+
+function setGlow(id, on, strength=1){
+  const el=$(id); if(!el) return;
+  el.setAttribute('opacity', on? (0.35*strength) : 0);
+}
+
+function update(){
+  // ---- 阶段参数 ----
+  const inStartup = t>=7 && t<15;
+  const running   = t>=15 && t<54;
+  const lossPhase = t>=54 && t<66;
+  const dropPhase = t>=66 && t<80;
+  const afterDrop = t>=80;
+
+  // 转速
+  let rpm = 0;
+  if(t<7) rpm=0;
+  else if(inStartup) rpm = lerp(0,1500,(t-7)/8);
+  else if(t<54) rpm = 1500;
+  else if(lossPhase) rpm = lerp(1500, 900, (t-54)/12);   // 飞轮惯性衰减
+  else rpm = lerp(900, 0, clamp((t-66)/10,0,1));
+
+  // 母线电压：只要飞轮还在拖动发电机就有输出
+  let volt = rpm>50 ? Math.round(380*(rpm/1500)) : 0;
+  if(running) volt = 380;
+
+  // 飞轮能量
+  let energy = clamp(Math.pow(rpm/1500,2)*100,0,100);
+
+  // 线圈逻辑
+  // 线圈状态按章节推进，与讲解严格对应
+  let L=false,M=false,S=false;
+  if(t>=15 && t<24)       { S=true; }                    // 保持：抓住棒
+  else if(t>=24 && t<34)  { S=true; M=true; }             // 移动爪挂入下一齿
+  else if(t>=34 && t<44)  { S=true; M=true; L=true; }     // 提升：棒上升一齿
+  else if(t>=44 && t<54)  { S=true; }                     // 倒手：M/L 释放复位
+  else if(lossPhase)      { S=true; }                     // 飞轮维持：仅保持线圈
+  // dropPhase / afterDrop：三组线圈全部断电 → 落棒
+
+  // 棒位：0=底部(插入) 100=顶部(提出)
+  let rod = 35;                                   // 起始：棒在堆芯中下部
+  if(t>=24 && t<54) rod = 35 + (t-24)/30*55;      // 逐齿提升到 90%
+  else if(t>=54)    rod = 90;
+  if(dropPhase){ rod = lerp(90, 8, Math.pow(clamp((t-66)/8,0,1),1.6)); }
+  if(afterDrop){ rod = 8; }
+
+  // 中子注量（示意）
+  const flux = clamp(100 - (100-rod)*1.05, 5, 100);
+
+  // ---- 应用到 SVG ----
+  $('motorRotor').style.transformOrigin='255px 70px';
+  $('motorRotor').style.transform=`rotate(${(t*rpm*0.02)%360}deg)`;
+  $('flyMark').style.transformOrigin='380px 70px';
+  $('flyMark').style.transform=`rotate(${(t*rpm*0.03)%360}deg)`;
+  $('rpmTxt').textContent = Math.round(rpm)+' rpm';
+  $('flyTxt').textContent = 'E '+Math.round(energy)+'%';
+  $('voltTxt').textContent = volt>10 ? volt+'V 50Hz' : '失压';
+  $('voltTxt').setAttribute('fill', volt>200?'#6d82a3':'#ff5c5c');
+  $('gridState').textContent = lossPhase?'失电！':(t>=7?'带电':'未投入');
+  $('gridState').setAttribute('fill', lossPhase?'#ff5c5c':'#8ba0bd');
+
+  // 母线流动
+  $('flowToBus').setAttribute('opacity', (t>=7 && !dropPhase)?0.9:0);
+
+  // 线圈发光
+  setGlow('coilLglow', L); setGlow('coilMglow', M); setGlow('coilSglow', S);
+
+  // 驱动杆位置（196 → 330 区间，rod% 决定偏移）
+  const topY = lerp(250, 196, rod/100);   // 棒位越高，杆越靠上
+  $('driveRod').setAttribute('y1', topY); $('driveRod').setAttribute('y2', topY+134);
+  $('rodBody').setAttribute('y', topY+120);
+  $('claws').setAttribute('transform', `translate(0,${(topY-196)*0.8})`);
+  $('fluxG').setAttribute('opacity', (0.10 + flux/100*0.55).toFixed(2));
+
+  // 落棒时缓冲器高亮
+  const buf = document.querySelector('#rodG rect[stroke="#5b3f6b"]');
+  if(buf){
+    const hit = dropPhase ? clamp(1-Math.abs(rod-12)/25,0,1) : 0;
+    buf.setAttribute('stroke', hit>0.05 ? '#ff5c5c' : '#5b3f6b');
+    buf.setAttribute('fill', hit>0.05 ? `rgba(255,92,92,${0.15*hit+0.1})` : '#2a2233');
+  }
+
+  // ---- 右侧面板 ----
+  $('vRpm').textContent = Math.round(rpm);
+  $('bRpm').style.width = (rpm/1500*100)+'%';
+  $('vVolt').textContent = volt>10? volt+' V':'0 V (失压)';
+  $('bVolt').style.width = (volt/380*100)+'%';
+  $('vE').textContent = Math.round(energy)+'%';
+  $('bE').style.width = energy+'%';
+  $('vRod').textContent = Math.round(rod)+'%';
+  $('bRod').style.width = rod+'%';
+  $('sL').textContent = L?'通电':'断电'; $('sL').style.color = L?'#4da3ff':'#8ba0bd';
+  $('sM').textContent = M?'通电':'断电'; $('sM').style.color = M?'#4da3ff':'#8ba0bd';
+  $('sS').textContent = S?'通电':'断电'; $('sS').style.color = S?'#4da3ff':'#8ba0bd';
+  $('sFlux').textContent = Math.round(flux)+'%';
+  $('sFlux').style.color = flux<60?'#ff5c5c':'#37d67a';
+
+  // ---- 字幕 ----
+  const i = Math.max(0, seg(t));
+  $('capIdx').textContent = `第 ${i+1} 章 / ${SCRIPT.length} · ${SCRIPT[i].title}`;
+  $('capTxt').innerHTML = SCRIPT[i].text;
+  tld.forEach((d,k)=>d.classList.toggle('on', k<=i));
+
+  $('badgeStage').textContent = '阶段：'+SCRIPT[i].title;
+  $('clock').textContent = t.toFixed(1)+'s';
+  $('scrub').value = t/TOTAL*1000;
+}
+
+function loop(now){
+  const dt = Math.min((now-last)/1000, 0.1); last = now;
+  if(playing){
+    t += dt;
+    if(t>=TOTAL){ t=0; }   // 循环播放
+  }
+  update();
+  requestAnimationFrame(loop);
+}
+
+// 控件
+$('btnPlay').onclick = ()=>{ playing=!playing; $('btnPlay').textContent = playing?'暂停':'播放'; };
+$('btnPrev').onclick = ()=>{ const i=Math.max(0,seg(t)-1); t=SCRIPT[i].t[0]+0.01; };
+$('btnNext').onclick = ()=>{ const i=Math.min(SCRIPT.length-1,seg(t)+1); t=SCRIPT[i].t[0]+0.01; };
+$('scrub').oninput = e => { t = e.target.value/1000*TOTAL; playing=false; $('btnPlay').textContent='播放'; };
+
+// 供外部校验
+window.__anim = { set:(v)=>{t=v;update();}, total:TOTAL, script:SCRIPT.length };
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
