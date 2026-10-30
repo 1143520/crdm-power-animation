@@ -84,6 +84,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         <rect x="150" y="330" width="14" height="10" fill="#5a7590" stroke="#0e1620"/>
         <text x="157" y="352" text-anchor="middle" font-size="8.5" fill="#5f7796">接地</text>
         <text x="170" y="308" text-anchor="middle" font-size="11" fill="#cfe0f5">驱动电动机</text>
+        <text x="170" y="196" text-anchor="middle" font-size="8" fill="#9fb6cf">185kW 380VAC</text>
       </g>
 
       <!-- ===== 联轴器 ===== -->
@@ -117,6 +118,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         <rect x="452" y="330" width="14" height="10" fill="#5a7590" stroke="#0e1620"/>
         <text x="459" y="352" text-anchor="middle" font-size="8.5" fill="#5f7796">接地</text>
         <text x="465" y="308" text-anchor="middle" font-size="11" fill="#cfe0f5">交流发电机</text>
+        <text x="465" y="196" text-anchor="middle" font-size="8" fill="#9fb6cf">500kVA 260V 1500rpm</text>
       </g>
 
       <!-- ===== 励磁机（右端小） ===== -->
@@ -124,28 +126,43 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         <rect x="540" y="240" width="60" height="70" rx="8" fill="url(#body)" stroke="#3a5470"/>
         <rect x="552" y="216" width="36" height="24" rx="3" fill="url(#bodyH)" stroke="#3a5470"/>
         <text x="570" y="282" text-anchor="middle" font-size="10" fill="#cfe0f5">励磁机</text>
+        <text x="570" y="330" text-anchor="middle" font-size="8" fill="#5f7796">无刷·旋转整流</text>
       </g>
 
       <!-- 主轴 -->
       <line x1="110" y1="275" x2="600" y2="275" stroke="#c3d4e6" stroke-width="2" opacity=".3"/>
 
-      <!-- ===== 出线到柜 ===== -->
+      <!-- ===== 出线：测量保护 + 出口断路器 → 停堆断路器柜 ===== -->
       <g id="busG">
-        <path d="M514 202 h50 v-50 h60" stroke="#4a6076" stroke-width="4" fill="none"/>
-        <path d="M514 202 h50 v-50 h60" stroke="#6fc0ff" stroke-width="2" fill="none" id="busFlow" opacity="0"/>
-        <rect x="624" y="120" width="90" height="62" rx="5" fill="url(#body)" stroke="#3a5470"/>
-        <text x="669" y="146" text-anchor="middle" font-size="11" fill="#cfe0f5">棒电源柜</text>
-        <text x="669" y="164" text-anchor="middle" font-size="9.5" fill="#7f96b8">整流 · 配电</text>
-        <path d="M714 152 h36" stroke="#4a6076" stroke-width="4"/>
-        <rect x="750" y="120" width="90" height="62" rx="5" fill="url(#body)" stroke="#3a5470"/>
-        <text x="795" y="146" text-anchor="middle" font-size="11" fill="#cfe0f5">逻辑柜</text>
-        <text x="795" y="164" text-anchor="middle" font-size="9.5" fill="#7f96b8">步进时序</text>
+        <path d="M514 202 h40 v-50 h40" stroke="#4a6076" stroke-width="4" fill="none"/>
+        <path d="M514 202 h40 v-50 h40" stroke="#6fc0ff" stroke-width="2" fill="none" id="busFlow" opacity="0"/>
+        <!-- 测量保护继电器 + 出口断路器 -->
+        <rect x="594" y="126" width="76" height="52" rx="5" fill="url(#body)" stroke="#3a5470"/>
+        <text x="632" y="148" text-anchor="middle" font-size="10" fill="#cfe0f5">测量保护</text>
+        <text x="632" y="164" text-anchor="middle" font-size="9" fill="#7f96b8">继电器+出口断路器</text>
+        <path d="M670 152 h24" stroke="#4a6076" stroke-width="4"/>
+        <!-- 停堆断路器柜 RTS01/02 -->
+        <g id="rtsG">
+          <rect x="694" y="106" width="146" height="96" rx="5" fill="url(#body)" stroke="#3a5470"/>
+          <text x="767" y="126" text-anchor="middle" font-size="11" fill="#cfe0f5">停堆断路器柜</text>
+          <text x="767" y="142" text-anchor="middle" font-size="9" fill="#7f96b8">RTS01 / RTS02</text>
+          <!-- 四个抽屉式断路器 -->
+          <g id="rtsBreakers">
+            <rect x="704" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="738" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="772" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="806" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+          </g>
+          <text x="767" y="186" text-anchor="middle" font-size="8.5" fill="#5f7796">MT16 HA 1600A 3P · 抽屉式</text>
+          <text x="767" y="198" text-anchor="middle" font-size="8.5" fill="#5f7796">控制 DC250V</text>
+        </g>
+        <path d="M767 202 v20" stroke="#4a6076" stroke-width="4"/>
       </g>
 
       <!-- ===== CRDM 剖面（右下） ===== -->
       <g id="crdmG">
-        <path d="M795 182 v40" stroke="#4a6076" stroke-width="3"/>
-        <path d="M795 182 v40" stroke="#6fc0ff" stroke-width="1.6" id="crdmFlow" opacity="0"/>
+        <path d="M767 222 h28 v0" stroke="#4a6076" stroke-width="3"/>
+        <path d="M795 222 v0" stroke="#6fc0ff" stroke-width="1.6" id="crdmFlow" opacity="0"/>
         <path d="M750 222 h90 v330 h-90 z" fill="url(#body)" stroke="#3a5470"/>
         <path d="M750 222 h12 v330 h-12 z M828 222 h12 v330 h-12 z" fill="#1c2733" stroke="#3a5470"/>
         <g id="coilL">
@@ -182,9 +199,9 @@ input[type=range]{flex:1;accent-color:var(--accent)}
       </g>
 
       <!-- 注释 -->
-      <text x="40" y="450" font-size="11" fill="#5f7796">机组由驱动电动机、飞轮、交流发电机、励磁机同轴组成，装于整体钢底座上。</text>
-      <text x="40" y="470" font-size="11" fill="#5f7796">顶部接线盒：电动机 XD1(测温)/XD2(加热)/XD3(主电源)；发电机测温、振动、主输出。</text>
-      <text x="40" y="490" font-size="11" fill="#5f7796">底部设接地端子；发电机输出经母线至棒电源柜与逻辑柜，再供 CRDM 三组线圈。</text>
+      <text x="40" y="450" font-size="11" fill="#5f7796">系统为 A/B 两列冗余（PLS-MG-01A/B）：电动机(185kW/380VAC)→飞轮→发电机(500kVA/260V/1500rpm)→励磁机(无刷)。</text>
+      <text x="40" y="470" font-size="11" fill="#5f7796">输出 260V / 45–50Hz(±5%)，经测量保护继电器+出口断路器 → 停堆断路器柜(RTS01/02，MT16 HA 1600A 3P 抽屉式，控制 DC250V)。</text>
+      <text x="40" y="490" font-size="11" fill="#5f7796">一路至第二组停堆断路器，一路至 CRDM 机柜，向提升/移动/保持三组线圈及其他控制线圈供电。</text>
     </svg>
   </div>
 
