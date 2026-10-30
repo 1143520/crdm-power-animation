@@ -300,7 +300,7 @@ const SCRIPT=[
  {t:[26,36],title:'移动爪挂齿',text:'<b>移动线圈 M</b> 通电，移动爪上移挂入上一齿槽；上下双爪交替受力，形成<b>倒手</b>。'},
  {t:[36,46],title:'提升一步',text:'<b>提升线圈 L</b> 通电，驱动杆整体上提一个齿距（约 10mm），棒位与中子注量随之上升。'},
  {t:[46,56],title:'倒手完成',text:'保持爪接住新齿位后 M、L 依次失电复位。<b>提—挂—松循环</b>逐齿提升至目标棒位。'},
- {t:[56,68],title:'失电 · 飞轮维持',text:'厂用电失去，电动机失去动力，<b>飞轮惯性</b>继续拖动发电机：母线仍有电压、线圈电流不中断，棒保持原位不误落。'},
+ {t:[56,68],title:'失电 · 飞轮维持',text:'厂用电失去，电动机失去动力，但机组仍<b>同向惰走</b>——飞轮惯性拖动发电机继续旋转（只减速、不反转）：母线仍有电压、线圈电流不中断，棒保持原位不误落。'},
  {t:[68,82],title:'落棒停堆',text:'逻辑柜<b>切断三组线圈电流</b>，双爪失磁释放，控制棒重力落入堆芯，<b>缓冲器</b>吸能——紧急停堆。'},
  {t:[82,92],title:'小结',text:'机组式棒电源靠<b>旋转惯量</b>抵御短时失电，靠<b>失磁落棒</b>保证停堆：既稳住棒，也能果断放开棒。'}
 ];
@@ -322,6 +322,15 @@ function update(){
   else rpm=lerp(820,0,clamp((t-68)/12,0,1));
   const volt=rpm>50?Math.round(380*(rpm/1500)):0;
   const energy=clamp(Math.pow(rpm/1500,2)*100,0,100);
+
+  // 飞轮角度：失电后仍同向惰走（继续累加，只减速，绝不反转）
+  // 用时间积分近似：以 rpm(t) 的当前值推进角度，保证单调递增
+  if(typeof update._ang==='undefined'){ update._ang=0; update._lastT=t; }
+  const dt=t-update._lastT;
+  if(dt>0) update._ang += dt*rpm*0.06;   // 只在时间前进时累加角度
+  else if(dt<0) update._ang = t*rpm*0.06; // 拖动回退时重算（仅影响视觉）
+  update._lastT=t;
+  const flyAngle=update._ang;
   let L=false,M=false,S=false;
   if(t>=16&&t<26)S=true;else if(t>=26&&t<36){S=M=true;}
   else if(t>=36&&t<46){S=M=L=true;}else if(t>=46&&t<56)S=true;else if(loss)S=true;
@@ -333,7 +342,7 @@ function update(){
 
   const spin=$('flySpin');
   spin.style.transformOrigin='330px 275px';
-  spin.style.transform=`rotate(${(t*rpm*0.06)%360}deg)`;
+  spin.style.transform=`rotate(${flyAngle%360}deg)`;
   $('busFlow').setAttribute('opacity',(t>=8&&!drop)?0.9:0);
   $('crdmFlow').setAttribute('opacity',(t>=16&&!drop)?0.9:0);
   const gl=(id,on)=>{const e=$(id);if(e)e.setAttribute('opacity',on?0.45:0);};
