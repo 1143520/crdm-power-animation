@@ -29,6 +29,14 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 .tl{display:flex;gap:4px;margin-top:8px}
 .tl div{flex:1;height:4px;border-radius:3px;background:#16233a;cursor:pointer}
 .tl div.on{background:var(--accent)}
+/* 悬停提示 */
+#tip{position:absolute;pointer-events:none;background:rgba(10,18,30,.96);border:1px solid #2a4a72;
+  border-radius:8px;padding:8px 12px;font-size:12px;line-height:1.55;max-width:290px;color:#d7e6f8;
+  box-shadow:0 6px 24px rgba(0,0,0,.6);opacity:0;transition:opacity .12s;z-index:50}
+#tip b{color:#8ed4ff}
+.hot{cursor:help}
+.hot:hover{filter:brightness(1.35)}
+#btnPng{background:#173a26;border-color:#2a6b45}
 </style>
 </head>
 <body>
@@ -50,7 +58,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 
   <!-- 地面与分区 -->
   <rect x="20" y="46" width="1400" height="520" rx="12" fill="url(#gnd)" stroke="#152238"/>
-  <text x="46" y="76" font-size="12.5" fill="#5f7796" letter-spacing="1">厂房布置（等轴测）</text>
+  <text x="46" y="76" font-size="12.5" fill="#5f7796" letter-spacing="1">厂房布置（等轴测）· 悬停设备查看说明</text>
   <g id="plant"></g>
   <g id="plantLabels"></g>
 
@@ -131,6 +139,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <button id="btnPlay" class="primary">暂停</button>
     <button id="btnPrev">上一章</button>
     <button id="btnNext">下一章</button>
+    <button id="btnPng" title="导出当前画面为 PNG">导出PNG</button>
     <input type="range" id="scrub" min="0" max="1000" value="0">
     <span id="clock" style="font-variant-numeric:tabular-nums;color:#8496b0;font-size:12px">0.0s</span>
   </div>
@@ -173,55 +182,116 @@ const C = {
   edge:'#0e1620'
 };
 let plant = '';
-// 地板
+// 地板 + 格栅
 plant += P([iso(0,0,0),iso(96,0,0),iso(96,56,0),iso(0,56,0)],'#0d1622','#1b2b3e');
+for(let gx=0;gx<=96;gx+=8){
+  const a=iso(gx,0,0),b=iso(gx,56,0);
+  plant += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#152437" stroke-width=".6" opacity=".55"/>`;
+}
+for(let gy=0;gy<=56;gy+=8){
+  const a=iso(0,gy,0),b=iso(96,gy,0);
+  plant += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#152437" stroke-width=".6" opacity=".55"/>`;
+}
 // 混凝土基础 + 钢底架
 plant += box(2,6,0, 92,40,4, C.conc,'#141b24','#101720', C.edge);
 plant += box(6,9,4, 84,34,3, '#2d3f52','#243343','#1b2836', C.edge);
+// 底架螺栓
+[[10,12],[10,40],[88,12],[88,40]].forEach(([bx,by])=>{
+  const p=iso(bx,by,7);
+  plant += `<circle cx="${p[0]}" cy="${p[1]}" r="2.2" fill="#4a6076" stroke="#0e1620"/>`;
+});
+// 轴承座
+[[14,26],[52,26],[84,26]].forEach(([bx,by])=>{
+  plant += box(bx-3,by-4,7, 6,8,4, '#3a4c60','#2a3a4c','#1e2b38', C.edge);
+});
 // 电动机（带散热筋）
 plant += cylX(12,26, 9, 11, 26, C.motorT,C.motorR,C.edge);
-plant += G(Array.from({length:9},(_,i)=>{
-  const p=iso(15+i*2.6,26,20); return `<line x1="${p[0]-2}" y1="${p[1]-13}" x2="${p[0]-2}" y2="${p[1]+13}" stroke="#182735" stroke-width="1"/>`;
+plant += G(Array.from({length:11},(_,i)=>{
+  const p=iso(15+i*2.3,26,20); return `<line x1="${p[0]-2}" y1="${p[1]-13}" x2="${p[0]-2}" y2="${p[1]+13}" stroke="#182735" stroke-width="1"/>`;
 }).join(''));
+// 电机风扇罩
+plant += cylX(11,26,9, 11.6, 1.6, '#5a7a9c','#3a546e', C.edge);
 // 接线盒
 plant += box(16,22,20, 12,8,4, '#334a63','#263a4f','#1b2a38', C.edge);
 // 联轴器护罩
 plant += box(39,20,9, 9,12,6, '#37506b','#2a3d52','#1e2d3d', C.edge);
-// 飞轮
+// 飞轮（大直径厚盘）
 plant += cylX(49,26, 9, 17, 5, C.flyT,C.flyR,C.edge);
 const flyC = iso(51.5,26,18);
-plant += `<circle cx="${flyC[0]}" cy="${flyC[1]}" r="${(17*cos30*K*0.55).toFixed(1)}" fill="none" stroke="#7a97b5" stroke-width="1" opacity=".7"/>`;
+plant += `<circle cx="${flyC[0]}" cy="${flyC[1]}" r="${(17*cos30*K*0.62).toFixed(1)}" fill="none" stroke="#7a97b5" stroke-width="1" opacity=".65"/>`;
+// 飞轮旋转标记（动态）
+plant += `<g id="flySpin"><line x1="${flyC[0]}" y1="${flyC[1]-18}" x2="${flyC[0]}" y2="${flyC[1]-4}" stroke="#ffb020" stroke-width="4" stroke-linecap="round"/></g>`;
 // 发电机
 plant += cylX(56,26, 9, 12, 30, C.genT,C.genR,C.edge);
-plant += G(Array.from({length:10},(_,i)=>{
-  const p=iso(59+i*2.8,26,21); return `<line x1="${p[0]-2}" y1="${p[1]-14}" x2="${p[0]-2}" y2="${p[1]+14}" stroke="#17242f" stroke-width="1"/>`;
+plant += G(Array.from({length:11},(_,i)=>{
+  const p=iso(59+i*2.5,26,21); return `<line x1="${p[0]-2}" y1="${p[1]-14}" x2="${p[0]-2}" y2="${p[1]+14}" stroke="#17242f" stroke-width="1"/>`;
 }).join(''));
+// 发电机励磁端罩
+plant += cylX(85,26,9, 10.5, 2.5, '#4a6a90','#31496a', C.edge);
 // 出线箱 + 电缆
 plant += box(64,20,22, 16,10,5, '#3a5570','#2c4258','#1f3040', C.edge);
+// 机组铭牌
+plant += box(30,7.2,7.4, 22,0.4,4.5, '#0f1a26','#0a121b','#0a121b', C.edge);
+{
+  const mp=iso(41,7.0,9.5);
+  plant += `<text x="${mp[0]}" y="${mp[1]}" font-size="5.2" fill="#9fb6cf" text-anchor="middle" transform="rotate(-0 ${mp[0]} ${mp[1]})">CRPS-1500 · 3φ380V</text>`;
+}
+// 母线桥架支撑
 plant += box(99,14,9, 12,22,3, '#2b3d52','#223243','#182533', C.edge);
-// 母线桥架三层
-[16,22,28].forEach((zz,i)=>{ plant += box(99,zz,9+ (i*0), 10,3,1.2, '#4f6f92','#3a5473','#283c52', C.edge); });
+[16,22,28].forEach((zz)=>{ plant += box(99,zz,9, 10,3,1.2, '#4f6f92','#3a5473','#283c52', C.edge); });
 // 柜列
 plant += box(118,4,0, 16,14,30, C.cabT,C.cabR,C.cabL, C.edge);
 plant += box(118,20,0, 18,16,34, C.cabT,C.cabR,C.cabL, C.edge);
 plant += box(118,38,0, 18,16,34, C.cabT,C.cabR,C.cabL, C.edge);
-// 柜门缝与指示灯
-[[118,4,16,14,30],[118,20,18,16,34],[118,38,18,16,34]].forEach(([x,y,w,d,h])=>{
+// 柜门细节：门缝、观察窗、把手、指示灯
+[[118,4,16,14,30],[118,20,18,16,34],[118,38,18,16,34]].forEach(([x,y,w,d,h],ci)=>{
   const a=iso(x,y,h*0.86), b=iso(x+w,y,h*0.86);
   plant += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#16222f" stroke-width="1"/>`;
-  const l=iso(x+w*0.25,y-0.6,h*0.62);
-  plant += `<circle cx="${l[0]}" cy="${l[1]}" r="2" fill="#37d67a"/>`;
+  // 观察窗
+  const wa=iso(x+2,y-0.2,h*0.68), wb=iso(x+w-2,y-0.2,h*0.68), wc=iso(x+w-2,y-0.2,h*0.5), wd=iso(x+2,y-0.2,h*0.5);
+  plant += P([wa,wb,wc,wd],'#0e1824','#3a5470',1);
+  // 指示灯
+  const l1=iso(x+w*0.3,y-0.5,h*0.42), l2=iso(x+w*0.5,y-0.5,h*0.42);
+  plant += `<circle id="cabLed${ci}a" cx="${l1[0]}" cy="${l1[1]}" r="1.8" fill="#37d67a"/>`;
+  plant += `<circle id="cabLed${ci}b" cx="${l2[0]}" cy="${l2[1]}" r="1.8" fill="#2b3f52"/>`;
+  // 门把手
+  const hh=iso(x+w-2,y-0.4,h*0.28);
+  plant += `<line x1="${hh[0]}" y1="${hh[1]-3}" x2="${hh[0]}" y2="${hh[1]+3}" stroke="#5a7590" stroke-width="1.8"/>`;
 });
 // 到容器的电缆桥
 plant += `<path d="${(()=>{const a=iso(136,46,34),b=iso(150,46,34),c=iso(176,46,20);return `M${a[0]} ${a[1]} L${b[0]} ${b[1]} L${c[0]} ${c[1]}`;})()}" stroke="#2f4459" stroke-width="3" fill="none"/>`;
-// 压力容器顶盖
+// 压力容器顶盖（带法兰螺栓）
 plant += cylZ(200,40, 0, 22, 10, '#4a6478','#33495c', C.edge);
 plant += cylZ(200,40, 10, 18, 6, '#5a778c','#3d566a', C.edge);
+plant += cylZ(200,40, 16, 19, 1.6, '#6a86a0','#45617a', C.edge);
+for(let ang=0; ang<12; ang++){
+  const a=ang/12*Math.PI*2;
+  const p=iso(200+Math.cos(a)*19,40+Math.sin(a)*19,17.8);
+  plant += `<circle cx="${p[0]}" cy="${p[1]}" r="1.4" fill="#7a93ad" stroke="#0e1620"/>`;
+}
 // CRDM 套管阵列
 [[-9,0],[0,-9],[9,0],[0,9],[0,0]].forEach(([dx,dy])=>{
-  plant += cylZ(200+dx,40+dy, 16, 2.2, 12, '#7d95ad','#4d6579', C.edge);
+  plant += cylZ(200+dx,40+dy, 17.6, 2.2, 12, '#7d95ad','#4d6579', C.edge);
 });
 document.getElementById('plant').innerHTML = plant;
+
+// 悬停热区（透明矩形盖在设备上方）
+const HOT = [
+  {id:'hotMotor', x:12,y:26,z:9,r:16, len:28, tip:'<b>驱动电动机</b><br>6kV 厂用电驱动，同轴拖动飞轮与发电机，是机组的动力输入端。'},
+  {id:'hotFly', x:49,y:26,z:9,r:19, len:8, tip:'<b>飞轮</b><br>大转动惯量储能。失电后靠惯性维持机组旋转，使发电机短时继续输出，避免控制棒误落。'},
+  {id:'hotGen', x:56,y:26,z:9,r:14, len:32, tip:'<b>交流发电机</b><br>由同轴驱动发电，输出三相 380V，经母线送至棒电源柜与逻辑柜。'},
+  {id:'hotCab', x:118,y:20,z:0,r:20, len:20, tip:'<b>棒电源柜 / 逻辑柜</b><br>完成整流、配电与步进时序控制，向 CRDM 三组线圈按序供直流电。'},
+  {id:'hotVessel', x:200,y:40,z:10,r:24, len:1, tip:'<b>压力容器顶盖</b><br>CRDM 驱动机构装在顶盖套管上，控制棒经驱动杆伸入堆芯。'}
+];
+plant = '';
+HOT.forEach(h=>{
+  const c=iso(h.x+h.len/2,h.y,h.z+h.r*0.6);
+  plant += `<g class="hot" data-tip="${h.tip.replace(/"/g,'&quot;')}">
+    <ellipse cx="${c[0]}" cy="${c[1]}" rx="${(h.r*1.4).toFixed(1)}" ry="${(h.r*0.9).toFixed(1)}" fill="#4da3ff" opacity="0"/>
+    <rect x="${c[0]-h.r*1.4}" y="${c[1]-h.r*0.9}" width="${h.r*2.8}" height="${h.r*1.8}" fill="#fff" opacity="0"/>
+  </g>`;
+});
+document.getElementById('plant').innerHTML += plant;
 
 // 标注
 function label(x,y,z,text,color){
@@ -319,6 +389,13 @@ function update(){
   const volt=rpm>50?Math.round(380*(rpm/1500)):0;
   const energy=clamp(Math.pow(rpm/1500,2)*100,0,100);
 
+  // 飞轮旋转标记
+  const spin=$('flySpin');
+  if(spin){
+    spin.style.transformOrigin=`${(()=>{const c=iso(51.5,26,18);return c[0]+'px '+c[1]+'px';})()}`;
+    spin.style.transform=`rotate(${(t*rpm*0.06)%360}deg)`;
+  }
+
   let L=false,M=false,S=false;
   if(t>=16&&t<26)S=true; else if(t>=26&&t<36){S=M=true;}
   else if(t>=36&&t<46){S=M=L=true;} else if(t>=46&&t<56)S=true;
@@ -388,6 +465,56 @@ $('btnPrev').onclick=()=>{const i=Math.max(0,seg(t)-1);t=SCRIPT[i].t[0]+0.01;};
 $('btnNext').onclick=()=>{const i=Math.min(SCRIPT.length-1,seg(t)+1);t=SCRIPT[i].t[0]+0.01;};
 $('scrub').oninput=e=>{t=e.target.value/1000*TOTAL;playing=false;$('btnPlay').textContent='播放';};
 addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('btnPlay').click();}});
+
+/* ================= 悬停提示 ================= */
+(function(){
+  const tip=document.createElement('div'); tip.id='tip'; document.body.appendChild(tip);
+  const svg=$('svg');
+  function show(e,html){
+    tip.innerHTML=html; tip.style.opacity='1';
+    const r=tip.getBoundingClientRect();
+    let x=e.clientX+14, y=e.clientY-10;
+    if(x+r.width>innerWidth-10) x=e.clientX-r.width-14;
+    if(y+r.height>innerHeight-10) y=innerHeight-r.height-14;
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  }
+  svg.querySelectorAll('.hot').forEach(el=>{
+    el.addEventListener('mousemove',e=>show(e,el.dataset.tip));
+    el.addEventListener('mouseleave',()=>{tip.style.opacity='0';});
+  });
+})();
+
+/* ================= 导出 PNG ================= */
+$('btnPng').onclick=()=>{
+  const svgEl=$('svg');
+  const clone=svgEl.cloneNode(true);
+  // 波形 canvas 是 foreignObject，导出时剔除并换成提示
+  clone.querySelectorAll('foreignObject').forEach(f=>{
+    const p=f.parentNode;
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',f.getAttribute('x')); t.setAttribute('y',+f.getAttribute('y')+40);
+    t.setAttribute('fill','#5f7796'); t.setAttribute('font-size','11');
+    t.textContent='（波形请在网页中查看）'; p.appendChild(t); f.remove();
+  });
+  const xml=new XMLSerializer().serializeToString(clone);
+  const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+  const img=new Image();
+  img.onload=()=>{
+    const c=document.createElement('canvas');
+    const scale=2;
+    c.width=1440*scale; c.height=980*scale;
+    const g=c.getContext('2d');
+    g.fillStyle='#070c14'; g.fillRect(0,0,c.width,c.height);
+    g.drawImage(img,0,0,c.width,c.height);
+    const a=document.createElement('a');
+    a.href=c.toDataURL('image/png');
+    a.download=`CRDM-棒电源-${SCRIPT[seg(t)].title}.png`;
+    a.click();
+  };
+  img.onerror=()=>alert('导出失败：当前浏览器不支持 SVG 转 PNG');
+  img.src=url;
+};
+
 window.__anim={set:v=>{t=v;update();drawWave();},total:TOTAL,script:SCRIPT.length};
 requestAnimationFrame(loop);
 </script>
