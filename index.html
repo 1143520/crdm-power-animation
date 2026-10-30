@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>控制棒驱动机构电源（机组式）· 装配剖视与运行流程</title>
+<title>控制棒驱动机构电源（机组式）· 装配外形与运行流程</title>
 <style>
 :root{--bg:#080c14;--line:#182338;--txt:#e2ebf8;--dim:#8295ae;--accent:#4da3ff;--ok:#37d67a;--warn:#ffb020;--bad:#ff5c5c}
 *{box-sizing:border-box}
@@ -35,164 +35,156 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 </style>
 </head>
 <body>
-<h1>控制棒驱动机构电源（机组式）· 装配剖视与运行流程</h1>
-<div class="sub">左：机组装配剖视 + CRDM 剖面｜右：运行流程图（阶段高亮）｜下：线圈电流与母线电压时序</div>
+<h1>控制棒驱动机构电源（机组式）· 装配外形与运行流程</h1>
+<div class="sub">左：机组侧视装配（按实物布置）→ CRDM 驱动机构｜右：运行流程图｜下：线圈电流与母线电压时序</div>
 
 <div class="main">
-  <!-- 左：装配剖视 -->
+  <!-- 左：装配侧视 -->
   <div class="card">
-    <h3>① 棒电源机组装配剖视（M-G SET）→ CRDM 驱动机构</h3>
-    <svg viewBox="0 0 1000 640" id="svgA">
+    <h3>① 棒电源机组侧视装配（M-G SET）→ CRDM 驱动机构</h3>
+    <svg viewBox="0 0 1000 660" id="svgA">
       <defs>
-        <linearGradient id="iron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a6076"/><stop offset="1" stop-color="#22303f"/></linearGradient>
-        <linearGradient id="copper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d08a4a"/><stop offset=".5" stop-color="#a8642c"/><stop offset="1" stop-color="#6b3d16"/></linearGradient>
+        <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a6076"/><stop offset=".5" stop-color="#33465c"/><stop offset="1" stop-color="#1e2b38"/></linearGradient>
+        <linearGradient id="bodyH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a7691"/><stop offset=".5" stop-color="#3a5470"/><stop offset="1" stop-color="#22303f"/></linearGradient>
+        <linearGradient id="base" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4f66"/><stop offset="1" stop-color="#1c2733"/></linearGradient>
         <linearGradient id="shaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a9fb4"/><stop offset=".5" stop-color="#c3d4e6"/><stop offset="1" stop-color="#5b7089"/></linearGradient>
-        <linearGradient id="housing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3f52"/><stop offset="1" stop-color="#17242f"/></linearGradient>
         <linearGradient id="coilHot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b7ed2"/><stop offset=".5" stop-color="#8ed4ff"/><stop offset="1" stop-color="#2b7ed2"/></linearGradient>
         <radialGradient id="coreglow"><stop offset="0" stop-color="#ff8a3d" stop-opacity=".65"/><stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/></radialGradient>
-        <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="6" stroke="#3a4f66" stroke-width="1.2"/>
-        </pattern>
-        <pattern id="hatchCu" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="5" stroke="#a8642c" stroke-width="1.4"/>
-        </pattern>
         <filter id="fglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
 
-      <!-- 标题 -->
-      <text x="500" y="26" text-anchor="middle" font-size="12" fill="#6d82a3">机组纵剖面（1:20 示意）</text>
+      <!-- ===== 混凝土基础 ===== -->
+      <rect x="40" y="360" width="640" height="30" rx="3" fill="#1c2733" stroke="#2b3f52"/>
+      <rect x="48" y="390" width="624" height="10" fill="#131c26"/>
+      <text x="360" y="414" text-anchor="middle" font-size="10" fill="#5f7796">混凝土基础</text>
 
-      <!-- ===== 机座与基础 ===== -->
-      <rect x="60" y="330" width="560" height="26" rx="3" fill="#1c2733" stroke="#2b3f52"/>
-      <rect x="70" y="356" width="540" height="12" fill="#131c26"/>
-      <text x="340" y="384" text-anchor="middle" font-size="10" fill="#5f7796">铸铁机座 · 减振基础</text>
+      <!-- ===== 长条钢底座 ===== -->
+      <path d="M70 330 h580 v30 h-580 z" fill="url(#base)" stroke="#2b3f52"/>
+      <!-- 底脚 -->
+      <path d="M80 360 h40 v12 h-40 z M600 360 h40 v12 h-40 z" fill="#22303f" stroke="#2b3f52"/>
+      <!-- 地脚螺栓 -->
+      <g fill="#4a6076" stroke="#0e1620"><circle cx="100" cy="372" r="3"/><circle cx="620" cy="372" r="3"/></g>
+      <text x="360" y="350" text-anchor="middle" font-size="9.5" fill="#5f7796">整体钢底座</text>
 
-      <!-- ===== 电动机剖面（左） ===== -->
+      <!-- ===== 驱动电动机（左） ===== -->
       <g id="motorG">
-        <!-- 外壳剖切（剖面线） -->
-        <path d="M100 180 h130 v100 h-130 z" fill="url(#housing)" stroke="#3a5470"/>
-        <path d="M100 180 h130 v14 h-130 z M100 266 h130 v14 h-130 z" fill="url(#hatch)" stroke="#3a5470"/>
-        <!-- 定子铁芯 -->
-        <rect x="112" y="196" width="106" height="68" fill="url(#iron)" stroke="#2b3f52"/>
-        <!-- 定子绕组（铜） -->
-        <g id="motorWind">
-          <rect x="118" y="202" width="94" height="10" fill="url(#copper)"/>
-          <rect x="118" y="248" width="94" height="10" fill="url(#copper)"/>
-          <path d="M118 202 h94 v10 h-94 z M118 248 h94 v10 h-94 z" fill="url(#hatchCu)" opacity=".6"/>
+        <!-- 机身 -->
+        <rect x="110" y="220" width="120" height="110" rx="10" fill="url(#body)" stroke="#3a5470"/>
+        <!-- 散热筋 -->
+        <g stroke="#22303f" stroke-width="2">
+          <path d="M122 226 V324 M134 226 V324 M146 226 V324 M158 226 V324 M170 226 V324 M182 226 V324 M194 226 V324 M206 226 V324"/>
         </g>
-        <!-- 转子 -->
-        <rect x="120" y="216" width="90" height="28" rx="6" fill="#31465c" stroke="#4a6076"/>
-        <rect x="120" y="226" width="90" height="8" fill="#22303f"/>
-        <!-- 转轴 -->
-        <rect x="96" y="225" width="140" height="10" fill="url(#shaft)"/>
-        <!-- 轴承 -->
-        <rect x="106" y="220" width="12" height="20" fill="#5a7590" stroke="#0e1620"/>
-        <rect x="212" y="220" width="12" height="20" fill="#5a7590" stroke="#0e1620"/>
-        <text x="165" y="164" text-anchor="middle" font-size="11" fill="#8ba0bd">驱动电动机（剖视）</text>
-        <text x="165" y="308" text-anchor="middle" font-size="9.5" fill="#5f7796">定子 / 转子 / 绕组 / 轴承</text>
+        <!-- 前端盖 -->
+        <rect x="102" y="228" width="12" height="94" rx="4" fill="#2b3f52" stroke="#3a5470"/>
+        <!-- 顶部接线盒 XD1 XD2 XD3 -->
+        <rect x="126" y="184" width="88" height="36" rx="4" fill="url(#bodyH)" stroke="#3a5470"/>
+        <text x="170" y="206" text-anchor="middle" font-size="9" fill="#cfe0f5">XD1/2/3</text>
+        <text x="170" y="176" text-anchor="middle" font-size="9" fill="#7f96b8">测温·加热·主电源</text>
+        <!-- 接地端子 -->
+        <rect x="150" y="330" width="14" height="10" fill="#5a7590" stroke="#0e1620"/>
+        <text x="157" y="352" text-anchor="middle" font-size="8.5" fill="#5f7796">接地</text>
+        <text x="170" y="308" text-anchor="middle" font-size="11" fill="#cfe0f5">驱动电动机</text>
       </g>
 
       <!-- ===== 联轴器 ===== -->
-      <rect x="230" y="212" width="34" height="36" rx="4" fill="url(#housing)" stroke="#3a5470"/>
-      <path d="M236 220 h22 M236 230 h22 M236 240 h22" stroke="#4a6076" stroke-width="2"/>
-      <text x="247" y="200" text-anchor="middle" font-size="9.5" fill="#5f7796">联轴器</text>
+      <rect x="230" y="248" width="34" height="54" rx="5" fill="url(#bodyH)" stroke="#3a5470"/>
+      <path d="M238 258 h18 M238 270 h18 M238 282 h18" stroke="#22303f" stroke-width="2"/>
+      <text x="247" y="240" text-anchor="middle" font-size="9" fill="#5f7796">联轴器</text>
 
-      <!-- ===== 飞轮剖面 ===== -->
+      <!-- ===== 飞轮（大圆盘） ===== -->
       <g id="flyG">
-        <circle cx="330" cy="230" r="58" fill="url(#iron)" stroke="#4a6076" stroke-width="2"/>
-        <circle cx="330" cy="230" r="44" fill="none" stroke="#3a5470" stroke-width="1.5"/>
-        <circle cx="330" cy="230" r="14" fill="#22303f" stroke="#4a6076"/>
+        <ellipse cx="330" cy="275" rx="52" ry="58" fill="url(#bodyH)" stroke="#3a5470" stroke-width="2"/>
+        <ellipse cx="330" cy="275" rx="38" ry="44" fill="none" stroke="#4a6076" stroke-width="1.5"/>
+        <circle cx="330" cy="275" r="12" fill="#22303f" stroke="#4a6076"/>
         <g id="flySpin">
-          <path d="M330 176 V230" stroke="#ffb020" stroke-width="5" stroke-linecap="round"/>
-          <path d="M330 230 L372 254" stroke="#ffb020" stroke-width="3" opacity=".6"/>
+          <path d="M330 222 V275" stroke="#ffb020" stroke-width="5" stroke-linecap="round"/>
         </g>
-        <text x="330" y="164" text-anchor="middle" font-size="11" fill="#8ba0bd">飞轮</text>
-        <text x="330" y="308" text-anchor="middle" font-size="9.5" fill="#5f7796">转动惯量储能</text>
+        <text x="330" y="200" text-anchor="middle" font-size="11" fill="#8ba0bd">飞轮</text>
+        <text x="330" y="308" text-anchor="middle" font-size="9.5" fill="#5f7796">惯性储能</text>
       </g>
 
-      <!-- ===== 发电机剖面（右） ===== -->
+      <!-- ===== 交流发电机（右） ===== -->
       <g id="genG">
-        <path d="M400 180 h130 v100 h-130 z" fill="url(#housing)" stroke="#3a5470"/>
-        <path d="M400 180 h130 v14 h-130 z M400 266 h130 v14 h-130 z" fill="url(#hatch)" stroke="#3a5470"/>
-        <rect x="412" y="196" width="106" height="68" fill="url(#iron)" stroke="#2b3f52"/>
-        <rect x="418" y="202" width="94" height="10" fill="url(#copper)"/>
-        <rect x="418" y="248" width="94" height="10" fill="url(#copper)"/>
-        <path d="M418 202 h94 v10 h-94 z M418 248 h94 v10 h-94 z" fill="url(#hatchCu)" opacity=".6"/>
-        <rect x="420" y="216" width="90" height="28" rx="6" fill="#31465c" stroke="#4a6076"/>
-        <rect x="420" y="226" width="90" height="8" fill="#22303f"/>
-        <rect x="396" y="225" width="140" height="10" fill="url(#shaft)"/>
-        <rect x="406" y="220" width="12" height="20" fill="#5a7590" stroke="#0e1620"/>
-        <rect x="512" y="220" width="12" height="20" fill="#5a7590" stroke="#0e1620"/>
-        <text x="465" y="164" text-anchor="middle" font-size="11" fill="#8ba0bd">交流发电机（剖视）</text>
-        <text x="465" y="308" text-anchor="middle" font-size="9.5" fill="#5f7796">三相输出 380V</text>
+        <rect x="400" y="220" width="130" height="110" rx="10" fill="url(#body)" stroke="#3a5470"/>
+        <g stroke="#22303f" stroke-width="2">
+          <path d="M412 226 V324 M424 226 V324 M436 226 V324 M448 226 V324 M460 226 V324 M472 226 V324 M484 226 V324 M496 226 V324 M508 226 V324"/>
+        </g>
+        <rect x="526" y="228" width="12" height="94" rx="4" fill="#2b3f52" stroke="#3a5470"/>
+        <!-- 顶部接线盒 -->
+        <rect x="416" y="184" width="98" height="36" rx="4" fill="url(#bodyH)" stroke="#3a5470"/>
+        <text x="465" y="206" text-anchor="middle" font-size="9" fill="#cfe0f5">测温·振动·输出</text>
+        <text x="465" y="176" text-anchor="middle" font-size="9" fill="#7f96b8">发电机接线盒</text>
+        <rect x="452" y="330" width="14" height="10" fill="#5a7590" stroke="#0e1620"/>
+        <text x="459" y="352" text-anchor="middle" font-size="8.5" fill="#5f7796">接地</text>
+        <text x="465" y="308" text-anchor="middle" font-size="11" fill="#cfe0f5">交流发电机</text>
       </g>
 
-      <!-- 主轴贯穿 -->
-      <line x1="96" y1="230" x2="536" y2="230" stroke="#c3d4e6" stroke-width="2" opacity=".4"/>
+      <!-- ===== 励磁机（右端小） ===== -->
+      <g id="excG">
+        <rect x="540" y="240" width="60" height="70" rx="8" fill="url(#body)" stroke="#3a5470"/>
+        <rect x="552" y="216" width="36" height="24" rx="3" fill="url(#bodyH)" stroke="#3a5470"/>
+        <text x="570" y="282" text-anchor="middle" font-size="10" fill="#cfe0f5">励磁机</text>
+      </g>
 
-      <!-- ===== 出线与母线 ===== -->
+      <!-- 主轴 -->
+      <line x1="110" y1="275" x2="600" y2="275" stroke="#c3d4e6" stroke-width="2" opacity=".3"/>
+
+      <!-- ===== 出线到柜 ===== -->
       <g id="busG">
-        <path d="M530 200 h44 v-40 h60" stroke="#4a6076" stroke-width="4" fill="none"/>
-        <path d="M530 200 h44 v-40 h60" stroke="#6fc0ff" stroke-width="2" fill="none" id="busFlow" opacity="0"/>
-        <rect x="634" y="140" width="90" height="60" rx="5" fill="url(#housing)" stroke="#3a5470"/>
-        <text x="679" y="164" text-anchor="middle" font-size="11" fill="#cfe0f5">棒电源柜</text>
-        <text x="679" y="182" text-anchor="middle" font-size="9.5" fill="#7f96b8">整流 · 配电</text>
-        <path d="M724 170 h36" stroke="#4a6076" stroke-width="4"/>
-        <rect x="760" y="140" width="90" height="60" rx="5" fill="url(#housing)" stroke="#3a5470"/>
-        <text x="805" y="164" text-anchor="middle" font-size="11" fill="#cfe0f5">逻辑柜</text>
-        <text x="805" y="182" text-anchor="middle" font-size="9.5" fill="#7f96b8">步进时序</text>
+        <path d="M514 202 h50 v-50 h60" stroke="#4a6076" stroke-width="4" fill="none"/>
+        <path d="M514 202 h50 v-50 h60" stroke="#6fc0ff" stroke-width="2" fill="none" id="busFlow" opacity="0"/>
+        <rect x="624" y="120" width="90" height="62" rx="5" fill="url(#body)" stroke="#3a5470"/>
+        <text x="669" y="146" text-anchor="middle" font-size="11" fill="#cfe0f5">棒电源柜</text>
+        <text x="669" y="164" text-anchor="middle" font-size="9.5" fill="#7f96b8">整流 · 配电</text>
+        <path d="M714 152 h36" stroke="#4a6076" stroke-width="4"/>
+        <rect x="750" y="120" width="90" height="62" rx="5" fill="url(#body)" stroke="#3a5470"/>
+        <text x="795" y="146" text-anchor="middle" font-size="11" fill="#cfe0f5">逻辑柜</text>
+        <text x="795" y="164" text-anchor="middle" font-size="9.5" fill="#7f96b8">步进时序</text>
       </g>
 
-      <!-- ===== CRDM 剖面（右下放大） ===== -->
+      <!-- ===== CRDM 剖面（右下） ===== -->
       <g id="crdmG">
-        <path d="M805 200 v40" stroke="#4a6076" stroke-width="3"/>
-        <path d="M805 200 v40" stroke="#6fc0ff" stroke-width="1.6" id="crdmFlow" opacity="0"/>
-        <!-- 耐压壳剖切 -->
-        <path d="M760 250 h90 v300 h-90 z" fill="url(#housing)" stroke="#3a5470"/>
-        <path d="M760 250 h14 v300 h-14 z M836 250 h14 v300 h-14 z" fill="url(#hatch)" stroke="#3a5470"/>
-        <!-- 三组线圈（剖面绕组） -->
+        <path d="M795 182 v40" stroke="#4a6076" stroke-width="3"/>
+        <path d="M795 182 v40" stroke="#6fc0ff" stroke-width="1.6" id="crdmFlow" opacity="0"/>
+        <path d="M750 222 h90 v330 h-90 z" fill="url(#body)" stroke="#3a5470"/>
+        <path d="M750 222 h12 v330 h-12 z M828 222 h12 v330 h-12 z" fill="#1c2733" stroke="#3a5470"/>
         <g id="coilL">
-          <rect x="776" y="266" width="58" height="26" fill="#16233a" stroke="#3a5480"/>
-          <rect x="776" y="266" width="58" height="26" fill="url(#hatchCu)" opacity=".55"/>
-          <rect x="776" y="266" width="58" height="26" fill="url(#coilHot)" opacity="0" id="coilLglow" filter="url(#fglow)"/>
-          <text x="805" y="284" text-anchor="middle" font-size="10" fill="#cfe0f5">提升 L</text>
+          <rect x="764" y="238" width="62" height="26" fill="#16233a" stroke="#3a5480"/>
+          <rect x="764" y="238" width="62" height="26" fill="url(#coilHot)" opacity="0" id="coilLglow" filter="url(#fglow)"/>
+          <text x="795" y="256" text-anchor="middle" font-size="10" fill="#cfe0f5">提升 L</text>
         </g>
         <g id="coilM">
-          <rect x="776" y="300" width="58" height="26" fill="#16233a" stroke="#3a5480"/>
-          <rect x="776" y="300" width="58" height="26" fill="url(#hatchCu)" opacity=".55"/>
-          <rect x="776" y="300" width="58" height="26" fill="url(#coilHot)" opacity="0" id="coilMglow" filter="url(#fglow)"/>
-          <text x="805" y="318" text-anchor="middle" font-size="10" fill="#cfe0f5">移动 M</text>
+          <rect x="764" y="272" width="62" height="26" fill="#16233a" stroke="#3a5480"/>
+          <rect x="764" y="272" width="62" height="26" fill="url(#coilHot)" opacity="0" id="coilMglow" filter="url(#fglow)"/>
+          <text x="795" y="290" text-anchor="middle" font-size="10" fill="#cfe0f5">移动 M</text>
         </g>
         <g id="coilS">
-          <rect x="776" y="334" width="58" height="26" fill="#16233a" stroke="#3a5480"/>
-          <rect x="776" y="334" width="58" height="26" fill="url(#hatchCu)" opacity=".55"/>
-          <rect x="776" y="334" width="58" height="26" fill="url(#coilHot)" opacity="0" id="coilSglow" filter="url(#fglow)"/>
-          <text x="805" y="352" text-anchor="middle" font-size="10" fill="#cfe0f5">保持 S</text>
+          <rect x="764" y="306" width="62" height="26" fill="#16233a" stroke="#3a5480"/>
+          <rect x="764" y="306" width="62" height="26" fill="url(#coilHot)" opacity="0" id="coilSglow" filter="url(#fglow)"/>
+          <text x="795" y="324" text-anchor="middle" font-size="10" fill="#cfe0f5">保持 S</text>
         </g>
-        <!-- 驱动杆 -->
-        <rect x="798" y="256" width="14" height="240" rx="2" fill="url(#shaft)" id="driveRod"/>
+        <rect x="788" y="228" width="14" height="260" rx="2" fill="url(#shaft)" id="driveRod"/>
         <g id="teeth" stroke="#0d141d" stroke-width="1.4" opacity=".65">
-          <path d="M796 282 H814 M796 296 H814 M796 310 H814 M796 324 H814 M796 338 H814 M796 352 H814 M796 366 H814 M796 380 H814 M796 394 H814"/>
+          <path d="M786 254 H804 M786 268 H804 M786 282 H804 M786 296 H804 M786 310 H804 M786 324 H804 M786 338 H804 M786 352 H804 M786 366 H804 M786 380 H804"/>
         </g>
-        <!-- 双爪 -->
         <g id="claws">
-          <path d="M790 306 L805 314 L820 306" stroke="#ffb020" stroke-width="2.4" fill="none"/>
-          <path d="M790 340 L805 348 L820 340" stroke="#37d67a" stroke-width="2.4" fill="none"/>
+          <path d="M780 278 L795 286 L810 278" stroke="#ffb020" stroke-width="2.4" fill="none"/>
+          <path d="M780 312 L795 320 L810 312" stroke="#37d67a" stroke-width="2.4" fill="none"/>
         </g>
-        <text x="742" y="312" font-size="9.5" fill="#ffb020" text-anchor="end">移动爪</text>
-        <text x="742" y="346" font-size="9.5" fill="#37d67a" text-anchor="end">保持爪</text>
-        <!-- 堆芯与缓冲器 -->
-        <rect x="770" y="496" width="70" height="40" rx="4" fill="#0f1720" stroke="#2b3d5e"/>
-        <g id="fluxG" opacity=".3"><ellipse cx="805" cy="516" rx="30" ry="14" fill="url(#coreglow)"/></g>
-        <text x="852" y="522" font-size="9.5" fill="#6d82a3">堆芯</text>
-        <rect x="782" y="540" width="46" height="12" rx="4" fill="#241d2b" stroke="#4d3a5c" id="buffer"/>
-        <text x="852" y="551" font-size="9.5" fill="#7d6690">缓冲器</text>
-        <text x="805" y="596" text-anchor="middle" font-size="10.5" fill="#5d7391" id="badgeStage">待机</text>
+        <text x="742" y="284" font-size="9.5" fill="#ffb020" text-anchor="end">移动爪</text>
+        <text x="742" y="318" font-size="9.5" fill="#37d67a" text-anchor="end">保持爪</text>
+        <rect x="760" y="488" width="70" height="40" rx="4" fill="#0f1720" stroke="#2b3d5e"/>
+        <g id="fluxG" opacity=".3"><ellipse cx="795" cy="508" rx="30" ry="14" fill="url(#coreglow)"/></g>
+        <text x="842" y="514" font-size="9.5" fill="#6d82a3">堆芯</text>
+        <rect x="772" y="532" width="46" height="12" rx="4" fill="#241d2b" stroke="#4d3a5c" id="buffer"/>
+        <text x="842" y="543" font-size="9.5" fill="#7d6690">缓冲器</text>
+        <text x="795" y="586" text-anchor="middle" font-size="10.5" fill="#5d7391" id="badgeStage">待机</text>
       </g>
 
       <!-- 注释 -->
-      <text x="60" y="420" font-size="11" fill="#5f7796">说明：剖面线表示剖切金属；橙色为绕组铜线；蓝色高亮表示线圈通电。</text>
-      <text x="60" y="440" font-size="11" fill="#5f7796">流程：电动机 → 飞轮 → 发电机 → 棒电源柜 → 逻辑柜 → CRDM 三组线圈 → 控制棒。</text>
+      <text x="40" y="450" font-size="11" fill="#5f7796">机组由驱动电动机、飞轮、交流发电机、励磁机同轴组成，装于整体钢底座上。</text>
+      <text x="40" y="470" font-size="11" fill="#5f7796">顶部接线盒：电动机 XD1(测温)/XD2(加热)/XD3(主电源)；发电机测温、振动、主输出。</text>
+      <text x="40" y="490" font-size="11" fill="#5f7796">底部设接地端子；发电机输出经母线至棒电源柜与逻辑柜，再供 CRDM 三组线圈。</text>
     </svg>
   </div>
 
@@ -237,99 +229,72 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 </div>
 
 <script>
-/* ================= 运行流程图（含分支） ================= */
-const FLOW = [
-  {id:'grid', k:'厂用电投入', s:'6kV', y:20},
-  {id:'start', k:'机组启动', s:'升速→1500rpm', y:78},
-  {id:'volt', k:'发电机建压', s:'380V 50Hz', y:136},
-  {id:'S', k:'保持线圈 S', s:'保持爪吸合', y:194},
-  {id:'M', k:'移动线圈 M', s:'挂入下一齿', y:252},
-  {id:'L', k:'提升线圈 L', s:'上提一齿 10mm', y:310},
-  {id:'cycle', k:'倒手循环', s:'逐齿提升', y:368},
-  {id:'loss', k:'失电检测', s:'飞轮维持输出', y:436, branch:true},
-  {id:'recover', k:'短时恢复', s:'继续运行', y:496, side:'left'},
-  {id:'drop', k:'落棒停堆', s:'三爪失磁', y:496, side:'right'},
-  {id:'end', k:'停堆完成', s:'缓冲器吸能', y:566}
+/* ================= 运行流程图 ================= */
+const FLOW=[
+ {id:'grid',k:'厂用电投入',s:'6kV',y:20},
+ {id:'start',k:'机组启动',s:'升速→1500rpm',y:78},
+ {id:'volt',k:'发电机建压',s:'380V 50Hz',y:136},
+ {id:'S',k:'保持线圈 S',s:'保持爪吸合',y:194},
+ {id:'M',k:'移动线圈 M',s:'挂入下一齿',y:252},
+ {id:'L',k:'提升线圈 L',s:'上提一齿 10mm',y:310},
+ {id:'cycle',k:'倒手循环',s:'逐齿提升',y:368},
+ {id:'loss',k:'失电检测',s:'飞轮维持输出',y:436},
+ {id:'recover',k:'短时恢复',s:'继续运行',y:496,side:'left'},
+ {id:'drop',k:'落棒停堆',s:'三爪失磁',y:496,side:'right'},
+ {id:'end',k:'停堆完成',s:'缓冲器吸能',y:566}
 ];
 (function build(){
-  const cx=260, w=200, h=42;
-  let s='';
+  const cx=260,w=200,h=42;let s='';
   FLOW.forEach(f=>{
-    let x=cx-w/2;
-    if(f.side==='left') x=30;
-    if(f.side==='right') x=cx+w/2+20;
-    f._x=x;
-    s+=`<g id="fn_${f.id}">
-      <rect x="${x}" y="${f.y}" width="${w}" height="${h}" rx="7" fill="#0e1a29" stroke="#24384f" stroke-width="1.4"/>
+    let x=cx-w/2; if(f.side==='left')x=30; if(f.side==='right')x=cx+w/2+20; f._x=x;
+    s+=`<g id="fn_${f.id}"><rect x="${x}" y="${f.y}" width="${w}" height="${h}" rx="7" fill="#0e1a29" stroke="#24384f" stroke-width="1.4"/>
       <text x="${x+w/2}" y="${f.y+18}" font-size="12" fill="#cfdceb" text-anchor="middle">${f.k}</text>
-      <text x="${x+w/2}" y="${f.y+33}" font-size="9.5" fill="#5f7796" text-anchor="middle">${f.s}</text>
-    </g>`;
+      <text x="${x+w/2}" y="${f.y+33}" font-size="9.5" fill="#5f7796" text-anchor="middle">${f.s}</text></g>`;
   });
-  // 主箭头
   const chain=['grid','start','volt','S','M','L','cycle','loss'];
+  const F=id=>FLOW.find(f=>f.id===id);
   for(let i=0;i<chain.length-1;i++){
-    const a=FIND(chain[i]), b=FIND(chain[i+1]);
+    const a=F(chain[i]),b=F(chain[i+1]);
     s+=`<line x1="${cx}" y1="${a.y+42}" x2="${cx}" y2="${b.y-2}" stroke="#2f4a68" stroke-width="1.8"/>`;
   }
-  // 分支
-  const loss=FIND('loss'), rec=FIND('recover'), drop=FIND('drop'), end=FIND('end');
+  const loss=F('loss'),rec=F('recover'),drop=F('drop'),end=F('end');
   s+=`<path d="M${cx-40} ${loss.y+42} L${rec._x+100} ${rec.y-2}" stroke="#37d67a" stroke-width="1.6" fill="none"/>
       <text x="${cx-150}" y="${loss.y+62}" font-size="10" fill="#37d67a">≤Xs 恢复</text>`;
   s+=`<path d="M${cx+40} ${loss.y+42} L${drop._x+100} ${drop.y-2}" stroke="#ff5c5c" stroke-width="1.6" fill="none"/>
       <text x="${cx+80}" y="${loss.y+62}" font-size="10" fill="#ff5c5c">超时/停堆</text>`;
   s+=`<line x1="${drop._x+100}" y1="${drop.y+42}" x2="${cx}" y2="${end.y-2}" stroke="#2f4a68" stroke-width="1.6"/>`;
   document.getElementById('flowNodes').innerHTML=s;
-  function FIND(id){return FLOW.find(f=>f.id===id);}
 })();
 
 /* ================= 时序曲线 ================= */
-const WAVE_T=92, W=1400, H=160, OX=30, OY=20;
-function drawWave(t,L,M,S,volt){
+const WAVE_T=92,W=1400,H=160,OX=30,OY=20;
+function drawWave(t){
   const el=document.getElementById('waveArea');
-  const px=tt=>OX+tt/WAVE_T*W;
-  let s='';
-  // 背景与网格
-  for(let i=0;i<=9;i++){
-    const x=px(i*10);
+  const px=tt=>OX+tt/WAVE_T*W;let s='';
+  for(let i=0;i<=9;i++){const x=px(i*10);
     s+=`<line x1="${x}" y1="${OY}" x2="${x}" y2="${OY+H}" stroke="#152238"/>`;
-    s+=`<text x="${x}" y="${OY+H+16}" font-size="9" fill="#4f6b8c" text-anchor="middle">${i*10}s</text>`;
-  }
-  // 阶梯函数
-  const step=(fn,color,base,amp)=>{
-    let d='';
-    for(let tt=0;tt<=t;tt+=0.5){
-      const v=fn(tt)?1:0;
-      const x=px(tt), y=base-v*amp;
-      d+=(tt===0?'M':'L')+x+' '+y;
-      if(tt+0.5<=t){ d+='L'+px(tt+0.5)+' '+y; }
-    }
-    return `<path d="${d}" stroke="${color}" stroke-width="2.2" fill="none"/>`;
-  };
-  const fL=tt=>(tt>=36&&tt<46), fM=tt=>(tt>=26&&tt<36), fS=tt=>((tt>=16&&tt<68));
-  s+=step(fL,'#4da3ff',OY+40,26);
-  s+=step(fM,'#ffb020',OY+80,26);
-  s+=step(fS,'#37d67a',OY+120,26);
-  // 电压曲线
+    s+=`<text x="${x}" y="${OY+H+16}" font-size="9" fill="#4f6b8c" text-anchor="middle">${i*10}s</text>`;}
+  const step=(fn,color,base,amp)=>{let d='';
+    for(let tt=0;tt<=t;tt+=0.5){const v=fn(tt)?1:0;const x=px(tt),y=base-v*amp;
+      d+=(tt===0?'M':'L')+x+' '+y; if(tt+0.5<=t)d+='L'+px(tt+0.5)+' '+y;}
+    return `<path d="${d}" stroke="${color}" stroke-width="2.2" fill="none"/>`;};
+  s+=step(tt=>tt>=36&&tt<46,'#4da3ff',OY+40,26);
+  s+=step(tt=>tt>=26&&tt<36,'#ffb020',OY+80,26);
+  s+=step(tt=>tt>=16&&tt<68,'#37d67a',OY+120,26);
   let vd='';
   for(let tt=0;tt<=t;tt+=0.5){
-    const rpm = tt<8?0: tt<16?(tt-8)/8*1500 : tt<56?1500 : tt<68?1500-(tt-56)/12*680 : Math.max(0,820-(tt-68)/12*820);
-    const v=rpm/1500;
-    vd+=(tt===0?'M':'L')+px(tt)+' '+(OY+H-6-v*30);
-  }
+    const rpm=tt<8?0:tt<16?(tt-8)/8*1500:tt<56?1500:tt<68?1500-(tt-56)/12*680:Math.max(0,820-(tt-68)/12*820);
+    vd+=(tt===0?'M':'L')+px(tt)+' '+(OY+H-6-(rpm/1500)*30);}
   s+=`<path d="${vd}" stroke="#8496b0" stroke-width="2" fill="none"/>`;
-  // 游标
   s+=`<line x1="${px(t)}" y1="${OY}" x2="${px(t)}" y2="${OY+H}" stroke="#ff5c5c" stroke-width="1.4"/>`;
-  // 图例
-  s+=`<text x="${OX}" y="14" font-size="10" fill="#4da3ff">L</text>
-      <text x="${OX+30}" y="14" font-size="10" fill="#ffb020">M</text>
-      <text x="${OX+60}" y="14" font-size="10" fill="#37d67a">S</text>
-      <text x="${OX+90}" y="14" font-size="10" fill="#8496b0">母线电压</text>`;
+  s+=`<text x="${OX}" y="14" font-size="10" fill="#4da3ff">L</text><text x="${OX+30}" y="14" font-size="10" fill="#ffb020">M</text>
+      <text x="${OX+60}" y="14" font-size="10" fill="#37d67a">S</text><text x="${OX+90}" y="14" font-size="10" fill="#8496b0">母线电压</text>`;
   el.innerHTML=s;
 }
 
 /* ================= 时间轴脚本 ================= */
 const SCRIPT=[
- {t:[0,8],title:'设备组成',text:'机组式棒电源是<b>卧式 M-G 机组</b>：驱动电动机、飞轮、交流发电机同轴装在共用底架上；输出三相交流经母线桥架送到棒电源柜与逻辑柜，整流成直流供 CRDM 三组线圈。'},
+ {t:[0,8],title:'设备组成',text:'机组式棒电源由<b>驱动电动机、飞轮、交流发电机、励磁机</b>同轴组成，装于整体钢底座上；输出三相交流经母线至棒电源柜与逻辑柜，整流成直流供 CRDM 三组线圈。'},
  {t:[8,16],title:'机组启动',text:'6kV 厂用电投入，电动机拖动同轴机组升速；<b>飞轮随轴储存动能</b>，发电机建压至额定，逻辑柜自检通过进入待命。'},
  {t:[16,26],title:'保持爪抓住驱动杆',text:'<b>保持线圈 S</b> 通直流电，保持爪吸合卡入齿槽，控制棒被提住不下滑。'},
  {t:[26,36],title:'移动爪挂齿',text:'<b>移动线圈 M</b> 通电，移动爪上移挂入上一齿槽；上下双爪交替受力，形成<b>倒手</b>。'},
@@ -339,8 +304,7 @@ const SCRIPT=[
  {t:[68,82],title:'落棒停堆',text:'逻辑柜<b>切断三组线圈电流</b>，双爪失磁释放，控制棒重力落入堆芯，<b>缓冲器</b>吸能——紧急停堆。'},
  {t:[82,92],title:'小结',text:'机组式棒电源靠<b>旋转惯量</b>抵御短时失电，靠<b>失磁落棒</b>保证停堆：既稳住棒，也能果断放开棒。'}
 ];
-const TOTAL=92;
-let t=0,playing=true,last=performance.now();
+const TOTAL=92;let t=0,playing=true,last=performance.now();
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,k)=>a+(b-a)*k;
@@ -351,68 +315,50 @@ SCRIPT.forEach((s,i)=>{const d=document.createElement('div');d.title=s.title;
 const tld=[...tl.children];
 
 function update(){
-  const loss=t>=56&&t<68, drop=t>=68&&t<82, after=t>=82;
+  const loss=t>=56&&t<68,drop=t>=68&&t<82,after=t>=82;
   let rpm=0;
-  if(t<8)rpm=0; else if(t<16)rpm=lerp(0,1500,(t-8)/8);
-  else if(t<56)rpm=1500; else if(loss)rpm=lerp(1500,820,(t-56)/12);
+  if(t<8)rpm=0;else if(t<16)rpm=lerp(0,1500,(t-8)/8);
+  else if(t<56)rpm=1500;else if(loss)rpm=lerp(1500,820,(t-56)/12);
   else rpm=lerp(820,0,clamp((t-68)/12,0,1));
   const volt=rpm>50?Math.round(380*(rpm/1500)):0;
   const energy=clamp(Math.pow(rpm/1500,2)*100,0,100);
-
   let L=false,M=false,S=false;
-  if(t>=16&&t<26)S=true; else if(t>=26&&t<36){S=M=true;}
-  else if(t>=36&&t<46){S=M=L=true;} else if(t>=46&&t<56)S=true;
-  else if(loss)S=true;
-
+  if(t>=16&&t<26)S=true;else if(t>=26&&t<36){S=M=true;}
+  else if(t>=36&&t<46){S=M=L=true;}else if(t>=46&&t<56)S=true;else if(loss)S=true;
   let rod=30;
-  if(t>=26&&t<56)rod=30+(t-26)/30*58; else if(t>=56)rod=88;
+  if(t>=26&&t<56)rod=30+(t-26)/30*58;else if(t>=56)rod=88;
   if(drop)rod=lerp(88,4,Math.pow(clamp((t-68)/9,0,1),1.6));
   if(after)rod=4;
   const flux=clamp(100-(100-rod)*1.05,4,100);
 
-  // 飞轮旋转
   const spin=$('flySpin');
-  spin.style.transformOrigin='330px 230px';
+  spin.style.transformOrigin='330px 275px';
   spin.style.transform=`rotate(${(t*rpm*0.06)%360}deg)`;
-
-  // 母线电流
   $('busFlow').setAttribute('opacity',(t>=8&&!drop)?0.9:0);
   $('crdmFlow').setAttribute('opacity',(t>=16&&!drop)?0.9:0);
-
-  // 线圈
-  const gl=(id,on)=>{const e=$(id); if(e)e.setAttribute('opacity',on?0.45:0);};
-  gl('coilLglow',L); gl('coilMglow',M); gl('coilSglow',S);
-
-  // 驱动杆
-  const rodBottom=lerp(496,436,rod/100), rodTop=rodBottom-240;
+  const gl=(id,on)=>{const e=$(id);if(e)e.setAttribute('opacity',on?0.45:0);};
+  gl('coilLglow',L);gl('coilMglow',M);gl('coilSglow',S);
+  const rodBottom=lerp(488,428,rod/100),rodTop=rodBottom-260;
   $('driveRod').setAttribute('y',rodTop);
-  $('teeth').setAttribute('transform',`translate(0,${(rodTop-256)*0.6})`);
-  $('claws').setAttribute('transform',`translate(0,${(rodTop-256)*0.35})`);
+  $('teeth').setAttribute('transform',`translate(0,${(rodTop-228)*0.6})`);
+  $('claws').setAttribute('transform',`translate(0,${(rodTop-228)*0.35})`);
   const hit=drop?clamp(1-Math.abs(rod-6)/22,0,1):0;
   const buf=$('buffer');
   buf.setAttribute('stroke',hit>0.05?'#ff5c5c':'#4d3a5c');
   buf.setAttribute('fill',hit>0.05?`rgba(255,92,92,${0.2*hit+0.08})`:'#241d2b');
   $('fluxG').setAttribute('opacity',(0.1+flux/100*0.7).toFixed(2));
 
-  // 流程图高亮
-  const active = t<8?'grid': t<16?'start': t<26?'S': t<36?'M': t<46?'L': t<56?'cycle': loss?'loss': drop?'drop':'end';
-  FLOW.forEach(f=>{
-    const g=$('fn_'+f.id); if(!g)return;
-    const r=g.querySelector('rect');
-    const on=f.id===active;
-    r.setAttribute('stroke',on?'#4da3ff':'#24384f');
-    r.setAttribute('stroke-width',on?'2.6':'1.4');
-    r.setAttribute('fill',on?'#12283f':'#0e1a29');
-  });
+  const active=t<8?'grid':t<16?'start':t<26?'S':t<36?'M':t<46?'L':t<56?'cycle':loss?'loss':drop?'drop':'end';
+  FLOW.forEach(f=>{const g=$('fn_'+f.id);if(!g)return;const r=g.querySelector('rect');const on=f.id===active;
+    r.setAttribute('stroke',on?'#4da3ff':'#24384f');r.setAttribute('stroke-width',on?'2.6':'1.4');
+    r.setAttribute('fill',on?'#12283f':'#0e1a29');});
 
-  // KPI
   $('vRpm').innerHTML=Math.round(rpm)+'<small>rpm</small>';
   $('vVolt').innerHTML=volt+'<small>V</small>';
   $('vE').innerHTML=Math.round(energy)+'<small>%</small>';
   $('vRod').innerHTML=Math.round(rod)+'<small>%</small>';
   $('vCoil').textContent=`${L?'通':'断'} · ${M?'通':'断'} · ${S?'通':'断'}`;
   $('vFlux').innerHTML=Math.round(flux)+'<small>%</small>';
-
   const i=seg(t);
   $('capIdx').textContent=`第 ${i+1} 章 / ${SCRIPT.length} · ${SCRIPT[i].title}`;
   $('capTxt').innerHTML=SCRIPT[i].text;
@@ -420,17 +366,10 @@ function update(){
   $('badgeStage').textContent='阶段：'+SCRIPT[i].title;
   $('clock').textContent=t.toFixed(1)+'s';
   $('scrub').value=t/TOTAL*1000;
-
-  drawWave(t,fL(t),fM(t),fS(t),volt);
-  function fL(tt){return tt>=36&&tt<46;} function fM(tt){return tt>=26&&tt<36;}
-  function fS(tt){return tt>=16&&tt<68;}
+  drawWave(t);
 }
-
-function loop(now){
-  const dt=Math.min((now-last)/1000,0.1); last=now;
-  if(playing){t+=dt; if(t>=TOTAL)t=0;}
-  update(); requestAnimationFrame(loop);
-}
+function loop(now){const dt=Math.min((now-last)/1000,0.1);last=now;
+  if(playing){t+=dt;if(t>=TOTAL)t=0;}update();requestAnimationFrame(loop);}
 $('btnPlay').onclick=()=>{playing=!playing;$('btnPlay').textContent=playing?'暂停':'播放';};
 $('btnPrev').onclick=()=>{const i=Math.max(0,seg(t)-1);t=SCRIPT[i].t[0]+0.01;};
 $('btnNext').onclick=()=>{const i=Math.min(SCRIPT.length-1,seg(t)+1);t=SCRIPT[i].t[0]+0.01;};
