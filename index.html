@@ -141,28 +141,38 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         <text x="632" y="148" text-anchor="middle" font-size="10" fill="#cfe0f5">测量保护</text>
         <text x="632" y="164" text-anchor="middle" font-size="9" fill="#7f96b8">继电器+出口断路器</text>
         <path d="M670 152 h24" stroke="#4a6076" stroke-width="4"/>
+        <!-- 棒电源柜（整流 · 配电） -->
+        <rect x="694" y="126" width="76" height="52" rx="5" fill="url(#body)" stroke="#3a5470"/>
+        <text x="732" y="148" text-anchor="middle" font-size="10" fill="#cfe0f5">棒电源柜</text>
+        <text x="732" y="164" text-anchor="middle" font-size="9" fill="#7f96b8">整流 · 配电</text>
+        <path d="M770 152 h24" stroke="#4a6076" stroke-width="4"/>
+        <!-- 逻辑柜（4取2逻辑） -->
+        <rect x="818" y="126" width="76" height="52" rx="5" fill="url(#body)" stroke="#3a5470"/>
+        <text x="856" y="148" text-anchor="middle" font-size="10" fill="#cfe0f5">逻辑柜</text>
+        <text x="856" y="164" text-anchor="middle" font-size="9" fill="#7f96b8">4取2逻辑</text>
+        <path d="M894 152 h24" stroke="#4a6076" stroke-width="4"/>
         <!-- 停堆断路器柜 RTS01/02 -->
         <g id="rtsG">
-          <rect x="694" y="106" width="146" height="96" rx="5" fill="url(#body)" stroke="#3a5470"/>
-          <text x="767" y="126" text-anchor="middle" font-size="11" fill="#cfe0f5">停堆断路器柜</text>
-          <text x="767" y="142" text-anchor="middle" font-size="9" fill="#7f96b8">RTS01 / RTS02</text>
+          <rect x="918" y="106" width="146" height="96" rx="5" fill="url(#body)" stroke="#3a5470"/>
+          <text x="991" y="126" text-anchor="middle" font-size="11" fill="#cfe0f5">停堆断路器柜</text>
+          <text x="991" y="142" text-anchor="middle" font-size="9" fill="#7f96b8">RTS01 / RTS02</text>
           <!-- 四个抽屉式断路器 -->
           <g id="rtsBreakers">
-            <rect x="704" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
-            <rect x="738" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
-            <rect x="772" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
-            <rect x="806" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="928" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="962" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="996" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
+            <rect x="1030" y="150" width="28" height="20" rx="2" fill="#22303f" stroke="#4a6076"/>
           </g>
-          <text x="767" y="186" text-anchor="middle" font-size="8.5" fill="#5f7796">MT16 HA 1600A 3P · 抽屉式</text>
-          <text x="767" y="198" text-anchor="middle" font-size="8.5" fill="#5f7796">控制 DC250V</text>
+          <text x="991" y="186" text-anchor="middle" font-size="8.5" fill="#5f7796">MT16 HA 1600A 3P · 抽屉式</text>
+          <text x="991" y="198" text-anchor="middle" font-size="8.5" fill="#5f7796">控制 DC250V</text>
         </g>
-        <path d="M767 202 v20" stroke="#4a6076" stroke-width="4"/>
+        <path d="M991 202 v20" stroke="#4a6076" stroke-width="4"/>
       </g>
 
       <!-- ===== CRDM 剖面（右下） ===== -->
       <g id="crdmG">
-        <path d="M767 222 h28 v0" stroke="#4a6076" stroke-width="3"/>
-        <path d="M795 222 v0" stroke="#6fc0ff" stroke-width="1.6" id="crdmFlow" opacity="0"/>
+        <path d="M991 222 h28 v0" stroke="#4a6076" stroke-width="3"/>
+        <path d="M1019 222 v0" stroke="#6fc0ff" stroke-width="1.6" id="crdmFlow" opacity="0"/>
         <path d="M750 222 h90 v330 h-90 z" fill="url(#body)" stroke="#3a5470"/>
         <path d="M750 222 h12 v330 h-12 z M828 222 h12 v330 h-12 z" fill="#1c2733" stroke="#3a5470"/>
         <g id="coilL">
@@ -200,7 +210,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
 
       <!-- 注释 -->
       <text x="40" y="450" font-size="11" fill="#5f7796">系统为 A/B 两列冗余（PLS-MG-01A/B）：电动机(185kW/380VAC)→飞轮→发电机(500kVA/260V/1500rpm)→励磁机(无刷)。</text>
-      <text x="40" y="470" font-size="11" fill="#5f7796">输出 260V / 45–50Hz(±5%)，经测量保护继电器+出口断路器 → 停堆断路器柜(RTS01/02，MT16 HA 1600A 3P 抽屉式，控制 DC250V)。</text>
+      <text x="40" y="470" font-size="11" fill="#5f7796">输出 260V / 45–50Hz(±5%)，经测量保护继电器+出口断路器 → 棒电源柜(整流·配电) → 逻辑柜(4取2逻辑) → 停堆断路器柜(RTS01/02，MT16 HA 1600A 3P 抽屉式，控制 DC250V)。</text>
       <text x="40" y="490" font-size="11" fill="#5f7796">一路至第二组停堆断路器，一路至 CRDM 机柜，向提升/移动/保持三组线圈及其他控制线圈供电。</text>
     </svg>
   </div>
